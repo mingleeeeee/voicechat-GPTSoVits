@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+.play-button, .replay-button {
+    background-color: transparent;   /* Transparent background */
+    color: white;                    /* White icon color */
+    border: 2px solid white;         /* White border */
+    border-radius: 50%;              /* Make the button circular */
+    width: 35px;                     /* Set button size */
+    height: 35px;
+    font-size: 20px;                 /* Increase icon size */
+    cursor: pointer;                 /* Pointer cursor on hover */
+    display: flex;                   /* Center icon within button */
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;                /* Add a small space between buttons */
+    transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+}
+
+.play-button:hover, .replay-button:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Slight white background on hover */
+    border-color: #45a049;                      /* Green border on hover */
+}
+    </style>
+</head>
+<body>
+    <div id="chatbot-container">
+        <!-- Chat header -->
+        <div id="chat-header">
+            <h2>Tokyobeast</h2>
+        </div>
+
+        <!-- Chat messages container -->
+        <div id="chat-messages" class="chat-box">
+            <!-- Chat bubbles will be dynamically added here -->
+        </div>
+
+        <!-- Chat input container -->
+        <div id="chat-input-container">
+            <!-- Microphone Button -->
+            <button id="start-talking-button" class="mic-button">🎤</button>
+
+            <!-- Stop Audio Button -->
+            <button id="stop-audio-button" class="icon-button" title="Stop playing audio">Pause</button>
+
+            <!-- Keyboard Icon Button (to show input field) -->
+            <button id="keyboard-button" class="icon-button" title="Show input box">⌨️</button>
+        </div>
+
+        
+
+        <!-- Hidden Text Input and Send Button Container -->
+        <div id="hidden-input-container">
+            <input type="text" id="chat-input" placeholder="Type your message here...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    
+
+    <!-- Include Socket.IO and Client-Side JavaScript -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

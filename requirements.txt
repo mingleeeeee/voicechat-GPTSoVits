@@ -1,0 +1,11 @@
+boto3==1.35.39
+Flask==2.1.1
+Flask_Cors==4.0.1
+Flask_SocketIO==5.4.1
+librosa==0.10.2
+numpy==1.26.4
+openai==1.51.2
+python-dotenv==1.0.1
+python_speech_features==0.6
+webrtcvad_wheels==2.0.14
+Werkzeug==2.2.2
