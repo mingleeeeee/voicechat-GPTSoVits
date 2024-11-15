@@ -52,16 +52,29 @@ def title_case_all_upper_phrases(text):
 
     return ''.join(transformed_parts)
 
-# Function to get chatbot response
-def get_chatbot_response(user_input):
+# Initialize chat history as a global variable or session variable
+chat_history = [
+    {"role": "system", "content": system_content}  # Include the initial system message
+]
+
+def get_chatbot_response(user_input, chat_history):
+    # Append the user's message to the chat history
+    chat_history.append({"role": "user", "content": user_input})
+    
+    # Call the OpenAI API with the chat history
     response = client.chat.completions.create(
         model="gpt-4o",
-        messages=[
-            {"role": "system", "content": system_content},
-            {"role": "user", "content": user_input}
-        ]
+        messages=chat_history
     )
-    return title_case_all_upper_phrases(response.choices[0].message.content.strip())
+    
+    # Extract the chatbot's response
+    bot_response = response.choices[0].message.content.strip()
+    
+    # Append the bot's response to the chat history
+    chat_history.append({"role": "assistant", "content": bot_response})
+    
+    # Return the response and updated chat history
+    return title_case_all_upper_phrases(bot_response), chat_history
 
 
 # Initialize TTS Pipeline with Absolute Paths
@@ -160,8 +173,9 @@ def index():
 
 @socketio.on('message')
 def handle_message(msg):
+    global chat_history
     # Get chatbot response
-    bot_message = get_chatbot_response(msg)
+    bot_message, chat_history = get_chatbot_response(msg, chat_history)
 
     # Convert response to speech
     audio_path = text_to_speech_voicechat(bot_message)
