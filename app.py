@@ -1,6 +1,5 @@
 # app.py
 import nltk
-#nltk.download('averaged_perceptron_tagger_eng')
 import os
 import soundfile as sf
 import random
@@ -33,30 +32,12 @@ api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 
 # Load system content from WHITEPAPER.txt
-system_content ="あなたは、TOKYO BEASTプロジェクトに関する知識豊富なアシスタントです。2文以内で、できる限り短く、日本語や中国語や英語で答えてください。詳細な説明は省略し、要点のみを述べてください。:"
+system_content = "2文以内で、できる限り短く、日本語や中国語や英語で答えてください。詳細な説明は省略し、要点のみを述べてください。:"
+# Define RAG file
 with open("RAG/WHITEPAPER.txt", "r", encoding="utf-8") as f:
     system_content += f.read()
 
-# Initialize TTS Pipeline with Absolute Paths
-device = "cuda" if torch.cuda.is_available() else "cpu"
-i18n = I18nAuto()
-
-# Absolute paths for model files
-# GPT_model_path = "/home/ubuntu/new-chatbot/GPT-SoVITS/GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-step=369668.ckpt"
-# SoVITS_model_path = "/home/ubuntu/new-chatbot/GPT-SoVITS/GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth"
-# bert_base_path = "/home/ubuntu/new-chatbot/GPT-SoVITS/GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large"
-# cnhubert_base_path = "/home/ubuntu/new-chatbot/GPT-SoVITS/GPT_SoVITS/pretrained_models/chinese-hubert-base"
-
-# Configure TTS with absolute paths
-# tts_config = TTS_Config("/home/ubuntu/new-chatbot/GPT-SoVITS/GPT_SoVITS/configs/tts_infer.yaml")
-# tts_config.device = device
-# tts_config.t2s_weights_path = GPT_model_path
-# tts_config.vits_weights_path = SoVITS_model_path
-# tts_config.bert_base_path = bert_base_path
-# tts_config.cnhuhbert_base_path = cnhubert_base_path
-# tts_pipeline = TTS(tts_config)
-
-
+# All uppercase will cause TTS model speak separately, like TOKYO would speak like T-O-K-Y-O, so transform TOKYO -> Tokyo to fix the problem.
 def title_case_all_upper_phrases(text):
     # Split text by spaces but retain delimiters like punctuation
     parts = re.split(r'(\W+)', text)  # Split on non-word characters but keep them
@@ -82,15 +63,20 @@ def get_chatbot_response(user_input):
     )
     return title_case_all_upper_phrases(response.choices[0].message.content.strip())
 
-# Define the synthesize function for TTS synthesis
+
+# Initialize TTS Pipeline with Absolute Paths
+device = "cuda" if torch.cuda.is_available() else "cpu"
+i18n = I18nAuto()
+
+# Define the synthesize function for TTS synthesis (Text-To-Speech)
 def synthesize_tts(text):
     # Set target and reference language based on available options
-    target_language = "多語種混合" #"Japanese"
-    ref_language = "日文"
+    target_language = "多語種混合" #On ec2 pls define as "Multilingual Mixed"
+    ref_language = "日文" #On ec2 pls define as "Japanese"
 
     # Load reference text
-    ref_text_path = "GPT_SoVITS/inference/ref_text.txt"
-    ref_audio_path = "GPT_SoVITS/inference/train.wav_0000112640_0000241920.wav"
+    ref_text_path = "GPT_SoVITS/inference/ref_text.txt"                          #ref is Japanese Text
+    ref_audio_path = "GPT_SoVITS/inference/train.wav_0000112640_0000241920.wav"  #ref is Japanese voice
     with open(ref_text_path, 'r', encoding='utf-8') as file:
         ref_text = file.read()
 
@@ -140,6 +126,7 @@ def text_to_speech_voicechat(text):
         print("Error: Failed to generate audio.")
         return None
 
+# Function to convert STT (speech to text) through recording audio
 @socketio.on("speech_to_text")
 def handle_speech_to_text(data):
     audio_data = data.get("audio")

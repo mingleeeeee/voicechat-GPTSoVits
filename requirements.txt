@@ -3,7 +3,6 @@ Flask==2.1.1
 Flask_Cors==4.0.1
 Flask_SocketIO==5.4.1
 librosa==0.10.2
-numpy==1.26.4
 openai==1.51.2
 python-dotenv==1.0.1
 python_speech_features==0.6
@@ -12,7 +11,6 @@ Werkzeug==2.2.2
 numpy==1.23.4
 scipy
 tensorboard
-librosa==0.9.2
 numba==0.56.4
 pytorch-lightning
 gradio>=4.0,<=4.24.0
@@ -46,6 +44,4 @@ opencc==1.1.1; sys_platform == 'linux'
 python_mecab_ko; sys_platform != 'win32'
 fastapi<0.112.2
 matplotlib
-re
-io
 whisper
