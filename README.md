@@ -21,7 +21,7 @@ This project uses [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) for text-
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/mingleeeeee/voicechat-GPTSoVits.git
-   cd VOICECHAT-GPTSOVITS
+   cd voicechat-GPTSoVits
    ```
 2. **Install Dependencies**
    ```bash
